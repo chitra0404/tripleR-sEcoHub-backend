@@ -1,7 +1,7 @@
 const Recycler=require("../models/recyclerModel");
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
-const{NodeMailer}=require("../nodemailer/Nodemailer")
+const{NodeMailer}=require("../nodemailer/mailer")
 
 
 module.exports.getrecycler=async(req,res)=>{
@@ -17,7 +17,7 @@ module.exports.getrecycler=async(req,res)=>{
 module.exports.RecyclerRegister=async(req,res)=>{
     try{
 
-    const {name,email,password}=req.body;
+    const {name,email,password,role}=req.body;
    
     const emailexist=await Recycler.findOne({email:req.body.email})
     if(emailexist){
@@ -33,7 +33,7 @@ module.exports.RecyclerRegister=async(req,res)=>{
         { email },
         process.env.R_KEY
       );
-    const recycler=new Recycler( { name,email, password: hashedpassword,token, isVerified:false });
+    const recycler=new Recycler( { name,email,role:"recycler", password: hashedpassword,token, isVerified:false });
  
     await recycler.save();
     res.status(200) .header("auth-token").json({token:token});
@@ -55,7 +55,7 @@ NodeMailer(randomString, email, link,  sub);
 
 module.exports.AccActivation = async (req, res) => {
 
-    try {
+    // try {
         console.log(req.params.id);
         const tok  = req.params.id;
 console.log("token",tok);
@@ -74,11 +74,11 @@ console.log("token",tok);
         if (updated) {
             return res.status(201).json({ Message: "Account activated" });
         }
-    }
-    catch (err) {
-        console.error('Error signing up user', err);
-        return res.status(400).json({ Message: "Internal server error" })
-    }
+    // }
+    // catch (err) {
+    //     console.error('Error signing up user', err);
+    //     return res.status(400).json({ Message: "Internal server error" })
+    // }
 }
 
 module.exports.checkAct = async (req, res) => {

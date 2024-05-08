@@ -29,5 +29,5 @@ mongoose.connect(url)
 .then(()=>console.log("connected to Mongodb"))
 .catch(err=>console.log("error occurred",err));
 
-const port=3000;
-app.listen(port,()=>console.log("listening to the port"));
+const port=process.env.PORT||5003;
+app.listen(port,()=>console.log(`listening to the ${port}`));

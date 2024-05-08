@@ -18,7 +18,8 @@ const recyclerSchema=mongoose.Schema({
     },
     role:{
         type:String,
-       min:2, },
+       min:2,
+    default:"recycler", },
        isVerified:{
         type:Boolean,
       

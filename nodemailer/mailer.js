@@ -12,7 +12,7 @@ module.exports.NodeMailer = async (token, User_mail, link,  sub) => {
     ? (recycler.token_activate_account = token)
     : (recycler.token_reset_password = token);
 
-  const updated = await Recycler.findByIdAndUpdate(user._id, user);
+  const updated = await Recycler.findByIdAndUpdate(recycler._id, recycler);
   console.log(updated);
   if (updated) {
     sendEmail();
