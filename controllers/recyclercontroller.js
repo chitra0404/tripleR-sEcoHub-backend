@@ -69,7 +69,7 @@ console.log("token",tok);
 
         recycler.token_activate_account = "Account Activated";
 
-        const updated = await Recycler.findByIdAndUpdate(user._id, user);
+        const updated = await Recycler.findByIdAndUpdate(recycler._id, recycler);
 
         if (updated) {
             return res.status(201).json({ Message: "Account activated" });
