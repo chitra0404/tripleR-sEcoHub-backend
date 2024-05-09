@@ -108,7 +108,7 @@ module.exports.RecycleLogin=async(req,res)=>{
         if(!passwordmatch){
             return res.status(409).json({message:"invalid password"}); }
             if(recycler.isVerified){
-                const role=recyler.role;
+                
                 const token=jwt.sign({ email},process.env.R_KEY,{expiresIn:'24hr'})
                 return res.status(200).json({token,role});
             }
