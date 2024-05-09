@@ -110,7 +110,7 @@ module.exports.RecycleLogin=async(req,res)=>{
             if(recycler.isVerified){
                 
                 const token=jwt.sign({ email},process.env.R_KEY,{expiresIn:'24hr'})
-                return res.status(200).json({token,role});
+                return res.status(200).json({token});
             }
             else{
                 return res.status(400).json({ message: 'Account not activated' });
