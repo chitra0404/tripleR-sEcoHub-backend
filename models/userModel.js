@@ -1,6 +1,10 @@
 const mongoose=require('mongoose');
 
 const UserSchema=mongoose.Schema({
+    userId:{
+type:String,
+required:true,
+    },
     name:{
         type:String,
         required:true,
@@ -35,7 +39,6 @@ const UserSchema=mongoose.Schema({
     acc_create:{
         type: Date,
         default: Date.now
-    
     }
 })
 

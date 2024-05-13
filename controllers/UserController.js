@@ -1,6 +1,7 @@
 const User=require("../models/userModel");
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
+
 const{NodeMailer}=require("../nodemailer/Nodemailer")
 
 
@@ -28,12 +29,13 @@ module.exports.Register=async(req,res)=>{
           return;
     }
     const hashedpassword=await bcrypt.hash(password,10);
+   
     
     const token = jwt.sign(
-        { email },
+        { email,userId:user._id },
         process.env.TOKEN_SECRET
       );
-    const user=new User( { name,email,role:"consumer", password: hashedpassword,token, isVerified:false });
+    const user=new User( {userId:user._id, name,email,role:"consumer", password: hashedpassword,token, isVerified:false });
  
     await user.save();
     res.status(200) .header("auth-token").json({token,user});

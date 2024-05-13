@@ -1,6 +1,9 @@
 const mongoose=require('mongoose');
 
 const recyclerSchema=mongoose.Schema({
+    recyclerID:{
+        type:String,
+    },
     name:{
         type:String,
         required:true,
@@ -36,7 +39,17 @@ const recyclerSchema=mongoose.Schema({
         type: Date,
         default: Date.now
     
-    }
+    },
+    city: {
+        type: String,
+        required: true,
+    },
+    availability: {
+        type: Boolean,
+        default: true,
+    },
+    assignedPickups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'pickup' }] 
+
 })
 
 const Recycler=mongoose.model('recycler',recyclerSchema);

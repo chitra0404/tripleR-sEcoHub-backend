@@ -17,7 +17,7 @@ module.exports.getrecycler=async(req,res)=>{
 module.exports.RecyclerRegister=async(req,res)=>{
     try{
 
-    const {name,email,password,role}=req.body;
+    const {name,email,password,city}=req.body;
    
     const emailexist=await Recycler.findOne({email:req.body.email})
     if(emailexist){
@@ -33,7 +33,7 @@ module.exports.RecyclerRegister=async(req,res)=>{
         { email },
         process.env.R_KEY
       );
-    const recycler=new Recycler( { name,email,role:"recycler", password: hashedpassword,token, isVerified:false });
+    const recycler=new Recycler( { name,email,role:"recycler", password: hashedpassword,token, isVerified:false,city });
  
     await recycler.save();
     res.status(200) .header("auth-token").json({token:token});
