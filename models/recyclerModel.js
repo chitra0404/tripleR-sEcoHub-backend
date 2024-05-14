@@ -10,6 +10,10 @@ const recyclerSchema=mongoose.Schema({
         min:1,
         max:255,
     },
+    location: {
+        type: { type: String, default: 'Point' },
+        coordinates: [Number], // [longitude, latitude]
+      },
     email:{
         type:String,
         required:true,
@@ -51,6 +55,9 @@ const recyclerSchema=mongoose.Schema({
     assignedPickups: [{ type: mongoose.Schema.Types.ObjectId, ref: 'pickup' }] 
 
 })
+
+recyclerSchema.index({ location: '2dsphere' }); 
+
 
 const Recycler=mongoose.model('recycler',recyclerSchema);
 module.exports=Recycler;

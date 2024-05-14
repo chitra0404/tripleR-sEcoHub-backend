@@ -118,3 +118,30 @@ module.exports.RecycleLogin=async(req,res)=>{
     
 }
 
+module.exports.searchRecyclers=async(req,res)=>{
+    try {
+        const { latitude, longitude, radius } = req.query;
+    
+        const radiusInMeters = parseInt(radius) * 1000;
+    
+        const recyclers = await Recycler.aggregate([
+          {
+            $geoNear: {
+              near: {
+                type: 'Point',
+                coordinates: [parseFloat(longitude), parseFloat(latitude)], 
+              },
+              distanceField: 'distance', 
+              maxDistance: radiusInMeters, 
+              spherical: true,
+            },
+          },
+        ]);
+    
+        res.json(recyclers);
+      } catch (error) {
+        console.error('Error searching recyclers:', error);
+        res.status(500).json({ message: 'Internal server error' });
+      }
+}
+

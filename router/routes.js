@@ -4,6 +4,7 @@ const { getrecycler, RecyclerRegister, RecycleLogin, AccActivation, checkAct } =
 const { getAdmin, adminRegister, admninLogin } = require('../controllers/admincontroller');
 const { schedulePickup, pickupRequest } = require('../controllers/pickupcontroller');
 const { auth } = require('../middleware/authMiddleware');
+const { getPrice } = require('../controllers/PriceListController');
 const router=express.Router();
 
 
@@ -33,6 +34,8 @@ router.post("/ad-login",admninLogin);
 //pickup routes
 router.post("/pickup",auth,schedulePickup);
 router.put("/pickuprequest/:id/confirm",auth,pickupRequest);
+
+router.get("/getprice",getPrice);
 
 
 module.exports=router;
