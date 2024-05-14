@@ -7,7 +7,7 @@ const{NodeMailer}=require("../nodemailer/mailer")
 module.exports.getrecycler=async(req,res)=>{
     try{
         const recycler=await Recycler.find()
-        res.status(200).send({ status: "200", message: user });
+        res.status(200).send({ status: "200", message: recycler });
     } catch (error) {
       console.log(error);
       res.status(200).send({ status: "500", message: error });
