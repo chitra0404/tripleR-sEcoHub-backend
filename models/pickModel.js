@@ -3,7 +3,7 @@ const pickupSchema= mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
-        required: true
+        
     },
     pickupID:{
 type:String,
@@ -41,7 +41,7 @@ date:{
 recycler:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'recycler',
-    required: true
+    
 },
 
 status:{
