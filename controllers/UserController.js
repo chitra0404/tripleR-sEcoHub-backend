@@ -38,7 +38,7 @@ module.exports.Register=async(req,res)=>{
     const user=new User( {userId:user._id, name,email,role:"consumer", password: hashedpassword,token, isVerified:false });
  
     await user.save();
-    res.status(200) .header("auth-token").json({token,user});
+    res.status(200) .header("Bearer").json({token,user});
     const randomString =
 Math.random().toString(36).substring(2, 15) +
 Math.random().toString(36).substring(2, 15);
@@ -111,7 +111,8 @@ module.exports.Login=async(req,res)=>{
             return res.status(409).json({message:"invalid password"}); }
             if(user.isVerified){
                 const role=user.role;
-                const token=jwt.sign({ userId:user._id},process.env.TOKEN_SECRET,{expiresIn:'24hr'})
+                const name=user.name;
+                const token=jwt.sign({ userId:user._id,email,name},process.env.TOKEN_SECRET,{expiresIn:'24hr'})
                 return res.status(200).json({token,role});
             }
             else{

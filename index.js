@@ -7,6 +7,10 @@ const route=require("./router/routes")
 require('dotenv').config();
 
 const app=express();
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  next();
+});
 app.use(cors({
     origin: '*'
   }));

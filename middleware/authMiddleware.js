@@ -1,23 +1,27 @@
-const jwt = require("jsonwebtoken");
-const User=require("../models/userModel")
+// authMiddleware.js
 
-module.exports.auth= async(req, res, next)=> {
-    let token = req.headers.authorization.split(' ')[1];
-    console.log("token",token)
-      if (!token) return res.status(401).send("Access Denied");
-
+const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
+module.exports. auth = async (req, res, next) => {
   try {
-    if(token.length<500){
-    const verifiedUser = jwt.verify(token, process.env.TOKEN_SECRET);
-    const rootUser=await User.findOne({id:verifiedUser._id}).select('-password');
-    console.log(rootUser);
-    req.rootUser = rootUser;
-    req.rootUserId = rootUser.id;
-    req.token = token;
+    // Get the token from the request header
+    const token = req.header('Authorization').replace('Bearer ', '');
 
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+
+    // Find the user based on the decoded token
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
     }
+
+    // Attach the user object to the request
+    req.user = user;
     next();
   } catch (error) {
-    res.status(400).send("Invalid token");
+    return res.status(401).json({ message: 'Invalid token' });
   }
 };
+

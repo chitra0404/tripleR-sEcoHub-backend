@@ -64,4 +64,15 @@ module.exports.pickupRequest = async (req, res) => {
     }
 }
 
+module.exports.getResponse=async(req,res)=>{
+  try{
+    const data=await Pickup.find();
+    res.status(200).send({message:data});
+    } catch (error) {
+      console.log(error);
+      res.status(5500).send({ status: "500", message: error });
+    }
+
+  
+}
 

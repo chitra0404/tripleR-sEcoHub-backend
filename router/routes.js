@@ -2,7 +2,7 @@ const express=require('express');
 const { getUser, Register, Login, AccountActivation, checkActivation, PasswordResetLink, PasswordUpdate, deleteUser } = require('../controllers/UserController');
 const { getrecycler, RecyclerRegister, RecycleLogin, AccActivation, checkAct } = require('../controllers/recyclercontroller');
 const { getAdmin, adminRegister, admninLogin } = require('../controllers/admincontroller');
-const { schedulePickup, pickupRequest } = require('../controllers/pickupcontroller');
+const { schedulePickup, pickupRequest, getResponse } = require('../controllers/pickupcontroller');
 const { auth } = require('../middleware/authMiddleware');
 const { getPrice } = require('../controllers/PriceListController');
 const router=express.Router();
@@ -34,6 +34,7 @@ router.post("/ad-login",admninLogin);
 //pickup routes
 router.post("/pickup",auth,schedulePickup);
 router.put("/pickuprequest/:id/confirm",auth,pickupRequest);
+router.get("/pickuprequests",getResponse);
 
 router.get("/getprice",getPrice);
 
