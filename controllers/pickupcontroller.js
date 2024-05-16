@@ -24,16 +24,16 @@ module.exports.schedulePickup = async (req, res) => {
           address: address,
           othernumber: othernumber,
           items: items,
-          recycler: recycle._id  // Use the found recycler's ID
+          recycler: recycle._id  
       });
 
-      // Save the pickup request
+      
       await newpickup.save();
 
-      // Notify the recycler about the new pickup request
+    
       notifyRecyclerByEmail(newpickup, recycle.email);
 
-      // Respond with success message
+     
       res.status(201).json({ message: 'Pickup request created successfully', pickupRequest: newpickup });
   } catch (err) {
       console.error('Error scheduling pickup:', err);
@@ -56,7 +56,7 @@ module.exports.pickupRequest = async (req, res) => {
       await pickupRequest.save();
       const email = pickupRequest.user.email;
       console.log(email);
-      notifyUserByEmail(pickupRequest, email); // Pass pickupRequest and email to notifyUserByEmail
+      notifyUserByEmail(pickupRequest, email); 
       res.status(200).json({ message: 'Pickup request confirmed successfully', pickupRequest });
     } catch (error) {
       console.error(error);

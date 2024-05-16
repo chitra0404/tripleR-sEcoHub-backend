@@ -10,9 +10,19 @@ const recyclerSchema=mongoose.Schema({
         min:1,
         max:255,
     },
+    address:{
+        type:String,
+    },
+    mobilenumber:{
+        type:Number,
+    },
     location: {
         type: { type: String, default: 'Point' },
         coordinates: [Number], // [longitude, latitude]
+      },
+      pincode:{
+        type:Number,
+        required:true,
       },
     email:{
         type:String,

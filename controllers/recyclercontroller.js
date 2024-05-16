@@ -14,45 +14,63 @@ module.exports.getrecycler=async(req,res)=>{
     }
 }
 
-module.exports.RecyclerRegister=async(req,res)=>{
-    try{
+module.exports.RecyclerRegister = async (req, res) => {
+  try {
+    const { name, email, password, city, address, latitude, longitude, pincode } = req.body;
 
-    const {name,email,password,city}=req.body;
-   
-    const emailexist=await Recycler.findOne({email:req.body.email})
-    if(emailexist){
-        res.status(400).json({
-            status: "400",
-            message: "This email is already in use",
-          });
-          return;
+    // Check if email already exists
+    const emailexist = await Recycler.findOne({ email: req.body.email });
+    if (emailexist) {
+      return res.status(400).json({
+        status: "400",
+        message: "This email is already in use",
+      });
     }
-    const hashedpassword=await bcrypt.hash(password,10);
-    
+
+    // Hash the password
+    const hashedpassword = await bcrypt.hash(password, 10);
+
+    // Generate a token
     const token = jwt.sign(
-        { email },
-        process.env.R_KEY
-      );
-    const recycler=new Recycler( { name,email,role:"recycler", password: hashedpassword,token, isVerified:false,city });
- 
+      { email },
+      process.env.R_KEY
+    );
+
+    // Create the recycler object
+    const recycler = new Recycler({
+      name,
+      email,
+      password: hashedpassword,
+      token,
+      isVerified: false,
+      city,
+      address,
+      pincode,
+      location: {
+        type: "Point",
+        coordinates: [longitude, latitude]
+      }
+    });
+
+    // Save the recycler to the database
     await recycler.save();
-    res.status(200) .header("auth-token").json({token:token});
-    const randomString =
-Math.random().toString(36).substring(2, 15) +
-Math.random().toString(36).substring(2, 15);
 
-const link = `${process.env.LINK}/acc/${randomString}`;
+    // Send the response
+    res.status(200).header("auth-token").json({ token: token });
 
-const sub = "Account Activation"
+    // Generate random string for account activation
+    const randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const link = `${process.env.LINK}/acc/${randomString}`;
+    const sub = "Account Activation";
 
-NodeMailer(randomString, email, link,  sub);
-    } catch (err) {
-        console.error('Error signing up user', err);
-        return res.status(400).json({ Message: "Internal server error" })
-    }
+    // Send activation email
+    NodeMailer(randomString, email, link, sub);
 
-}
-
+  } catch (err) {
+    console.error('Error registering recycler', err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 module.exports.AccActivation = async (req, res) => {
 
     // try {
@@ -119,29 +137,60 @@ module.exports.RecycleLogin=async(req,res)=>{
 }
 
 module.exports.searchRecyclers=async(req,res)=>{
-    try {
-        const { latitude, longitude, radius } = req.query;
-    
-        const radiusInMeters = parseInt(radius) * 1000;
-    
-        const recyclers = await Recycler.aggregate([
-          {
-            $geoNear: {
-              near: {
-                type: 'Point',
-                coordinates: [parseFloat(longitude), parseFloat(latitude)], 
-              },
-              distanceField: 'distance', 
-              maxDistance: radiusInMeters, 
-              spherical: true,
-            },
-          },
-        ]);
-    
-        res.json(recyclers);
-      } catch (error) {
-        console.error('Error searching recyclers:', error);
-        res.status(500).json({ message: 'Internal server error' });
-      }
+  const { latitude, longitude, maxDistance = 5000 } = req.query; // Default maxDistance to 5000 meters
+
+  if (!latitude || !longitude) {
+      return res.status(400).json({ message: "Latitude and longitude are required" });
+  }
+
+  try {
+      const recyclers = await Recycler.find({
+          location: {
+              $near: {
+                  $geometry: {
+                      type: "Point",
+                      coordinates: [parseFloat(longitude), parseFloat(latitude)]
+                  },
+                  $maxDistance: parseFloat(maxDistance),
+                  $minDistance: 0 // Ensure minDistance is set to avoid negative values
+              }
+          }
+      });
+
+      res.status(200).json({ message: recyclers });
+  } catch (error) {
+      console.error('Error searching recyclers:', error);
+      res.status(500).json({ message: "Internal server error" });
+  }
 }
 
+module.exports.getPincode=async(req,res)=>{
+  const { pincode, latitude, longitude } = req.query;
+  if (!pincode) {
+    return res.status(400).json({ error: 'Pincode is required' });
+  }
+  try {
+    let recyclers;
+    if (latitude && longitude) {
+      recyclers = await Recycler.find({
+        pincode,
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [parseFloat(longitude), parseFloat(latitude)]
+            },
+            $maxDistance: 10000 // 10 km radius
+          }
+        }
+      });
+    } else {
+      recyclers = await Recycler.find({ pincode });
+    }
+
+    res.json(recyclers);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch recyclers' });
+  }
+
+}

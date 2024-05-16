@@ -1,6 +1,6 @@
 const express=require('express');
 const { getUser, Register, Login, AccountActivation, checkActivation, PasswordResetLink, PasswordUpdate, deleteUser } = require('../controllers/UserController');
-const { getrecycler, RecyclerRegister, RecycleLogin, AccActivation, checkAct } = require('../controllers/recyclercontroller');
+const { getrecycler, RecyclerRegister, RecycleLogin, AccActivation, checkAct, searchRecyclers } = require('../controllers/recyclercontroller');
 const { getAdmin, adminRegister, admninLogin } = require('../controllers/admincontroller');
 const { schedulePickup, pickupRequest, getResponse } = require('../controllers/pickupcontroller');
 const { auth } = require('../middleware/authMiddleware');
@@ -35,6 +35,7 @@ router.post("/ad-login",admninLogin);
 router.post("/pickup",auth,schedulePickup);
 router.put("/pickuprequest/:id/confirm",auth,pickupRequest);
 router.get("/pickuprequests",getResponse);
+router.get("/search",searchRecyclers);
 
 router.get("/getprice",getPrice);
 
