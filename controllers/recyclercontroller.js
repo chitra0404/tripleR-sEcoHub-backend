@@ -16,7 +16,7 @@ module.exports.getrecycler=async(req,res)=>{
 
 module.exports.RecyclerRegister = async (req, res) => {
   try {
-    const { name, email, password, city, address, latitude, longitude, pincode } = req.body;
+    const { name, email, password, city, address, latitude, longitude, pincode,mobilenumber } = req.body;
 
     // Check if email already exists
     const emailexist = await Recycler.findOne({ email: req.body.email });
@@ -49,7 +49,8 @@ module.exports.RecyclerRegister = async (req, res) => {
       location: {
         type: "Point",
         coordinates: [longitude, latitude]
-      }
+      },
+      mobilenumber
     });
 
     // Save the recycler to the database
@@ -126,9 +127,9 @@ module.exports.RecycleLogin=async(req,res)=>{
         if(!passwordmatch){
             return res.status(409).json({message:"invalid password"}); }
             if(recycler.isVerified){
-                
-                const token=jwt.sign({ email},process.env.R_KEY,{expiresIn:'24hr'})
-                return res.status(200).json({token});
+                const role=recycler.role;
+                const token=jwt.sign({ email,recylerId:recycler._id},process.env.R_KEY,{expiresIn:'24hr'})
+                return res.status(200).json({token,role});
             }
             else{
                 return res.status(400).json({ message: 'Account not activated' });
@@ -163,34 +164,30 @@ module.exports.searchRecyclers=async(req,res)=>{
       res.status(500).json({ message: "Internal server error" });
   }
 }
+module.exports.getPincode = async (req, res) => {
+  const { pincode } = req.query;
 
-module.exports.getPincode=async(req,res)=>{
-  const { pincode, latitude, longitude } = req.query;
+  // Log the received pincode for debugging
+  console.log('Received pincode:', pincode);
+
+  // Validate pincode
   if (!pincode) {
-    return res.status(400).json({ error: 'Pincode is required' });
+    console.log('Pincode is missing');
+    return res.status(400).json({ message: 'Invalid pincode' });
   }
+
+  const parsedPincode = Number(pincode);
+
+  if (isNaN(parsedPincode)) {
+    console.log('Pincode is not a number');
+    return res.status(400).json({ message: 'Invalid pincode' });
+  }
+
   try {
-    let recyclers;
-    if (latitude && longitude) {
-      recyclers = await Recycler.find({
-        pincode,
-        location: {
-          $near: {
-            $geometry: {
-              type: 'Point',
-              coordinates: [parseFloat(longitude), parseFloat(latitude)]
-            },
-            $maxDistance: 10000 // 10 km radius
-          }
-        }
-      });
-    } else {
-      recyclers = await Recycler.find({ pincode });
-    }
-
-    res.json(recyclers);
+    const recyclers = await Recycler.find({ pincode: parsedPincode });
+    res.json({ recyclers });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch recyclers' });
+    console.error('Error fetching recyclers:', error);
+    res.status(500).json({ message: 'Server error' });
   }
-
-}
+};

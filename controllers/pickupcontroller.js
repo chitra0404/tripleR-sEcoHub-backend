@@ -7,7 +7,7 @@ const { notifyUserByEmail } = require("../nodemailer/notifyUser");
 
 module.exports.schedulePickup = async (req, res) => {
   try {
-      const { user, city, state, address, othernumber, items, recycler } = req.body;
+      const { user, city, state, address, othernumber, items, recycler,weight } = req.body;
 
       // Find an available recycler in the specified city
       const recycle = await Recycler.findOne({ city: city, availability: true });
@@ -24,6 +24,7 @@ module.exports.schedulePickup = async (req, res) => {
           address: address,
           othernumber: othernumber,
           items: items,
+          weight:weight,
           recycler: recycle._id  
       });
 
@@ -76,3 +77,25 @@ module.exports.getResponse=async(req,res)=>{
   
 }
 
+module.exports.updateRate=async (req, res) => {
+  try {
+    const { pickupRequestId } = req.params;
+    const { rate } = req.body;
+
+    // Find the pickup request by ID
+    const pickupRequest = await Pickup.findById(pickupRequestId);
+
+    if (!pickupRequest) {
+      return res.status(404).json({ message: 'Pickup request not found' });
+    }
+
+    // Update the rate
+    pickupRequest.rate = rate;
+    await pickupRequest.save();
+
+    res.json({ message: 'Rate updated successfully', pickupRequest });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

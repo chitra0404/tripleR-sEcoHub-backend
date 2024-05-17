@@ -38,6 +38,14 @@ date:{
     type:Date,
     default:Date.now
 },
+weight:{
+    type: Number, 
+    required: true
+},
+rate:{
+    type: Number, 
+},
+
 recycler:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'recycler',
