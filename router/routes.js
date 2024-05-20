@@ -1,6 +1,6 @@
 const express=require('express');
 const { getUser, Register, Login, AccountActivation, checkActivation, PasswordResetLink, PasswordUpdate, deleteUser, updateUserProfile, getUserById } = require('../controllers/UserController');
-const { getrecycler, RecyclerRegister, RecycleLogin, AccActivation, checkAct, searchRecyclers, getPincode } = require('../controllers/recyclercontroller');
+const { getrecycler, RecyclerRegister, RecycleLogin, AccActivation, checkAct, searchRecyclers, getPincode, deleteRecycler } = require('../controllers/recyclercontroller');
 const { getAdmin, adminRegister, admninLogin } = require('../controllers/admincontroller');
 const { schedulePickup, pickupRequest, getResponse, updateRate } = require('../controllers/pickupcontroller');
 const { auth } = require('../middleware/authMiddleware');
@@ -11,7 +11,7 @@ const router=express.Router();
 
 
 //userroutes
-router.get("/getuser",auth,getUser);
+router.get("/getuser",getUser);
 router.get("/get/:id",auth,getUserById)
 router.post("/userregister",Register);
 router.post("/userlogin",Login);
@@ -23,7 +23,7 @@ router.delete("/user/:id",deleteUser);
 router.put('/profile/:id', auth, updateUserProfile);
 
 //recyclerroutes
-
+router.delete("/recycler/:id",deleteRecycler);
 router.get("/getrecycler",getrecycler);
 router.post("/re-register",RecyclerRegister);
 router.post("/re-login",RecycleLogin);

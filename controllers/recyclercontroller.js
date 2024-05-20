@@ -191,3 +191,15 @@ module.exports.getPincode = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+module.exports.deleteRecycler=async(req,res)=>{
+  const { recyclerId } = req.params;
+  try {
+   
+    await Recycler.findByIdAndDelete(recyclerId);
+    res.status(200).json({ message: 'Recycler deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
