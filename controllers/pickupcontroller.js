@@ -92,8 +92,8 @@ module.exports.updateRate=async (req, res) => {
     // Update the rate
     pickupRequest.rate = rate;
     await pickupRequest.save();
-
-    res.json({ message: 'Rate updated successfully', pickupRequest });
+console.log(pickupRequest)
+    res.json({ pickupRequest });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });

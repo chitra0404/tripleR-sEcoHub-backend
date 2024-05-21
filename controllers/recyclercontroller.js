@@ -203,3 +203,31 @@ module.exports.deleteRecycler=async(req,res)=>{
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
+module.exports.getProfile = async (req, res) => {
+  try {
+    const id =  req.params.id; // Assume req.user is populated from a middleware
+    const recycler = await Recycler.findById(id).select('-password');
+    res.json(recycler);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Update user profile
+module.exports.updateProfile = async (req, res) => {
+  try {
+    const id =   req.params.id; 
+    const updateData = { ...req.body };
+
+  
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    }
+
+    const recycle = await Recycler.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
+    res.json(recycle);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};

@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const PaymentSchema = new mongoose.Schema({
   pickupRequestId:  { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'PickupRequest',
-     required: true
+    ref: 'pickup',
+    
  },
   razorpayOrderId: {
      type: String,

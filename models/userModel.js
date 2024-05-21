@@ -67,31 +67,44 @@ UserSchema.methods.encryptCardDetails = function (cardNumber, cardExpiry, cardCV
     };
 };
 
-UserSchema.methods.decryptCardDetails = function (encryptedCardNumber, encryptedCardExpiry, encryptedCardCVV) {
+UserSchema.methods.decryptCardDetails = function() {
     const key = CryptoJS.enc.Utf8.parse(process.env.CRYPTO_KEY);
     if (!key) throw new Error('Decryption key is not defined');
   
-    const [ivCardNumber, contentCardNumber] = encryptedCardNumber.split(':');
-    const decryptedCardNumber = CryptoJS.AES.decrypt(contentCardNumber, key, {
-        iv: CryptoJS.enc.Hex.parse(ivCardNumber),
-    }).toString(CryptoJS.enc.Utf8);
+    let decryptedCardNumber = null, decryptedCardExpiry = null, decryptedCardCVV = null;
   
-    const [ivCardExpiry, contentCardExpiry] = encryptedCardExpiry.split(':');
-    const decryptedCardExpiry = CryptoJS.AES.decrypt(contentCardExpiry, key, {
-        iv: CryptoJS.enc.Hex.parse(ivCardExpiry),
-    }).toString(CryptoJS.enc.Utf8);
+    try {
+      if (this.cardNumber) {
+        const [ivCardNumber, contentCardNumber] = this.cardNumber.split(':');
+        decryptedCardNumber = CryptoJS.AES.decrypt(contentCardNumber, key, {
+          iv: CryptoJS.enc.Hex.parse(ivCardNumber),
+        }).toString(CryptoJS.enc.Utf8);
+      }
   
-    const [ivCardCVV, contentCardCVV] = encryptedCardCVV.split(':');
-    const decryptedCardCVV = CryptoJS.AES.decrypt(contentCardCVV, key, {
-        iv: CryptoJS.enc.Hex.parse(ivCardCVV),
-    }).toString(CryptoJS.enc.Utf8);
+      if (this.cardExpiry) {
+        const [ivCardExpiry, contentCardExpiry] = this.cardExpiry.split(':');
+        decryptedCardExpiry = CryptoJS.AES.decrypt(contentCardExpiry, key, {
+          iv: CryptoJS.enc.Hex.parse(ivCardExpiry),
+        }).toString(CryptoJS.enc.Utf8);
+      }
+  
+      if (this.cardCVV) {
+        const [ivCardCVV, contentCardCVV] = this.cardCVV.split(':');
+        decryptedCardCVV = CryptoJS.AES.decrypt(contentCardCVV, key, {
+          iv: CryptoJS.enc.Hex.parse(ivCardCVV),
+        }).toString(CryptoJS.enc.Utf8);
+      }
+    } catch (error) {
+      console.error('Decryption error:', error);
+    }
   
     return {
-        cardNumber: decryptedCardNumber,
-        cardExpiry: decryptedCardExpiry,
-        cardCVV: decryptedCardCVV,
+      cardNumber: decryptedCardNumber,
+      cardExpiry: decryptedCardExpiry,
+      cardCVV: decryptedCardCVV,
     };
-};
+  };
+  
 
 const User = mongoose.model('User', UserSchema);
 module.exports = User;

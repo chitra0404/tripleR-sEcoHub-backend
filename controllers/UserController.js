@@ -5,16 +5,23 @@ const jwt=require('jsonwebtoken');
 const{NodeMailer}=require("../nodemailer/Nodemailer")
 
 
-module.exports.getUser=async(req,res)=>{
-    try{
-        const user=await User.find()
-        res.status(200).send({ status: "200", message: user });
+module.exports.getUser = async (req, res) => {
+    try {
+      const users = await User.find();
+      const usersWithDecryptedDetails = users.map(user => {
+        const decryptedCardDetails = user.decryptCardDetails();
+        return {
+          ...user.toObject(),
+          decryptedCardDetails,
+        };
+      });
+  
+      res.status(200).send({ status: '200', message: usersWithDecryptedDetails });
     } catch (error) {
-      console.log(error);
-      res.status(200).send({ status: "500", message: error });
+      console.error(error);
+      res.status(500).send({ status: '500', message: error.message });
     }
-}
-
+  };
 module.exports.Register=async(req,res)=>{
     try{
 
