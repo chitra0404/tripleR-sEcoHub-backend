@@ -7,13 +7,15 @@ const { auth } = require('../middleware/authMiddleware');
 const { getPrice } = require('../controllers/PriceListController');
 const { CreateOrder, VerifyPayment, getPaymentById, getpayments } = require('../controllers/paymentController');
 const { rauth } = require('../middleware/recyclerMiddleware');
+const { addquery, getquery } = require('../controllers/querycontroller');
+const { getContent } = require('../controllers/contentController');
 const router=express.Router();
 
 
 
 //userroutes
 router.get("/getuser",getUser);
-router.get("/get/:id",auth,getUserById)
+router.get("/profile/:id",auth,getUserById)
 router.post("/userregister",Register);
 router.post("/userlogin",Login);
 router.patch("/activate/:id",AccountActivation);
@@ -30,8 +32,10 @@ router.post("/re-register",RecyclerRegister);
 router.post("/re-login",RecycleLogin);
 router.patch("/re-activate/:id",AccActivation);
 router.get("/checkaccount/:id",checkAct);
-router.get('/profile/:id', rauth,getProfile);
-router.put('/profile/:id', rauth, updateProfile);
+router.get('/pro/:id',rauth,getProfile);
+router.put('/pro/:id',rauth, updateProfile);
+router.post('/query',addquery);
+router.get('/query',getquery)
 
 //adminroutes
 router.get("/getadmin",getAdmin);
@@ -47,6 +51,7 @@ router.get("/search",searchRecyclers);
 router.get("/getpincode",getPincode);
 
 router.get("/getprice",getPrice);
+router.get("/content",getContent);
 
 router.post("/createOrder",rauth,CreateOrder);
 router.post("/verifyPayment",rauth,VerifyPayment);

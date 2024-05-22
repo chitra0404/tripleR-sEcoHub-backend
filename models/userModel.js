@@ -21,6 +21,9 @@ const UserSchema = new mongoose.Schema({
     mobilenumber: {
         type: Number,
     },
+    address:{
+      type:String,
+    },
     role: {
         type: String,
         default: "consumer",

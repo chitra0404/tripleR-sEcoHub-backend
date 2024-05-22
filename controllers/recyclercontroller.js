@@ -128,7 +128,8 @@ module.exports.RecycleLogin=async(req,res)=>{
             return res.status(409).json({message:"invalid password"}); }
             if(recycler.isVerified){
                 const role=recycler.role;
-                const token=jwt.sign({ email,recylerId:recycler._id},process.env.R_KEY,{expiresIn:'24hr'})
+                const recyclerId=recycler._id;
+                const token=jwt.sign({ email,recyclerId},process.env.R_KEY,{expiresIn:'24hr'})
                 return res.status(200).json({token,role});
             }
             else{
@@ -218,16 +219,29 @@ module.exports.getProfile = async (req, res) => {
 module.exports.updateProfile = async (req, res) => {
   try {
     const id =   req.params.id; 
-    const updateData = { ...req.body };
+    console.log(id)
+      const { name, email, city, address, latitude, longitude, pincode,mobilenumber } = req.body;
 
-  
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
-    }
+      const recycler = await Recycler.findById(id);
+      if (!recycler) {
+          return res.status(404).json({ message: 'User not found' });
+      }
 
-    const recycle = await Recycler.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
-    res.json(recycle);
+      if (name) recycler.name = name;
+      if (email) recycler.email = email;
+      if (address) recycler.address = address;
+      if (latitude) recycler.latitude = latitude;
+      if (city) recycler.longitude = longitude;
+      if (pincode) recycler.pincode = pincode;
+      if (mobilenumber) recycler.mobilenumber = mobilenumber;
+      if (city) recycler.city = city;
+     
+
+      await recycler.save();
+
+      res.status(200).json({ message: 'Profile updated successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+      console.error('Error updating user profile:', error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 };

@@ -208,7 +208,7 @@ module.exports.deleteUser=async(req,res)=>{
 module.exports.updateUserProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        const { name, email, cardNumber, cardExpiry, cardCVV } = req.body;
+        const { name, email,address,mobilenumber, cardNumber, cardExpiry, cardCVV } = req.body;
 
         const user = await User.findById(userId);
         if (!user) {
@@ -217,7 +217,8 @@ module.exports.updateUserProfile = async (req, res) => {
 
         if (name) user.name = name;
         if (email) user.email = email;
-
+        if (address) user.address = address;
+        if(mobilenumber)user.mobilenumber=mobilenumber;
         if (cardNumber && cardExpiry && cardCVV) {
             const encryptedCardDetails = user.encryptCardDetails(cardNumber, cardExpiry, cardCVV);
             user.cardNumber = encryptedCardDetails.encryptedCardNumber;
@@ -235,8 +236,8 @@ module.exports.updateUserProfile = async (req, res) => {
 };
 module.exports.getUserById = async (req, res) => {
     try {
-        const userId = req.params.id;
-        const user = await User.findById(userId);
+        const id = req.params.id;
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
