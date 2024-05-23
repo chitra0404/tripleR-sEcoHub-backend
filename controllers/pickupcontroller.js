@@ -15,7 +15,7 @@ module.exports.schedulePickup = async (req, res) => {
           return res.status(404).json({ message: "No recyclers available for this location" });
       }
 
-      // Create a new pickup request
+      
       const newpickup = new Pickup({
         pickupdID:Pickup._id,
           user: user,
@@ -96,6 +96,18 @@ console.log(pickupRequest)
     res.json({ pickupRequest });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+module.exports.getPickupRequestsByRecyclerId = async (req, res) => {
+  try {
+    const { recyclerId } = req.params;
+    const pickupRequests = await Pickup.find({ recycler: recyclerId }).populate('user', 'name email');;
+    res.status(200).json({ message: pickupRequests });
+  } catch (error) {
+    console.error('Error fetching pickup requests by recycler ID:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

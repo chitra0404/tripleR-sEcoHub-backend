@@ -10,7 +10,7 @@ module.exports. rauth = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.R_KEY);
     console.log(decoded);
 
-en
+
     const user = await Recycler.findById(decoded.recyclerId);
 
     if (!user) {

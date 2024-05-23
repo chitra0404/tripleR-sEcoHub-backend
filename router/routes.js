@@ -2,7 +2,7 @@ const express=require('express');
 const { getUser, Register, Login, AccountActivation, checkActivation, PasswordResetLink, PasswordUpdate, deleteUser, updateUserProfile, getUserById } = require('../controllers/UserController');
 const { getrecycler, RecyclerRegister, RecycleLogin, AccActivation, checkAct, searchRecyclers, getPincode, deleteRecycler, getProfile, updateProfile } = require('../controllers/recyclercontroller');
 const { getAdmin, adminRegister, admninLogin } = require('../controllers/admincontroller');
-const { schedulePickup, pickupRequest, getResponse, updateRate } = require('../controllers/pickupcontroller');
+const { schedulePickup, pickupRequest, getResponse, updateRate, getPickupRequestsByRecyclerId } = require('../controllers/pickupcontroller');
 const { auth } = require('../middleware/authMiddleware');
 const { getPrice } = require('../controllers/PriceListController');
 const { CreateOrder, VerifyPayment, getPaymentById, getpayments } = require('../controllers/paymentController');
@@ -44,11 +44,13 @@ router.post("/ad-login",admninLogin);
 
 //pickup routes
 router.post("/pickup",auth,schedulePickup);
-router.put("/pickuprequest/:id/confirm",pickupRequest);
+router.put("/pickuprequest/:id/confirm",rauth,pickupRequest);
 router.put('/pickuprequest/:pickupRequestId',rauth,updateRate)
 router.get("/pickuprequests",getResponse);
 router.get("/search",searchRecyclers);
 router.get("/getpincode",getPincode);
+router.get('/pickuprequests/:recyclerId', getPickupRequestsByRecyclerId);
+
 
 router.get("/getprice",getPrice);
 router.get("/content",getContent);
