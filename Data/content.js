@@ -1,17 +1,17 @@
 module.exports.content=[{
     name:"Reuse",
-    image:"https://cdn.shopify.com/s/files/1/1476/2654/files/c46beb93a8f6fded937fe021c01e82f0979bb8f4.jpg?v=1599840488",
+    image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBgf8UB3wSLBH0Hkk2Wdyow7wayGbO3UGBiQ&s",
     link:"https://www.fairharborclothing.com/blogs/news/30-ways-to-reuse-plastic"
 },{
     name:"Reuse",
-    image:"https://cdn.shopify.com/s/files/1/1476/2654/files/c46beb93a8f6fded937fe021c01e82f0979bb8f4.jpg?v=1599840488",
+    image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBgf8UB3wSLBH0Hkk2Wdyow7wayGbO3UGBiQ&s",
     link:"https://www.savemoneycutcarbon.com/learn-save/simple-ways-to-reduce-reuse-and-recycle-plastic-2/"
 },{
     name:"Reuse",
-    image:"https://cdn.shopify.com/s/files/1/1476/2654/files/c46beb93a8f6fded937fe021c01e82f0979bb8f4.jpg?v=1599840488",
+    image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBgf8UB3wSLBH0Hkk2Wdyow7wayGbO3UGBiQ&s",
     link:"https://link.springer.com/article/10.1007/s11356-021-16980-y"
 },{
     name:"Reuse",
-    image:"https://cdn.shopify.com/s/files/1/1476/2654/files/c46beb93a8f6fded937fe021c01e82f0979bb8f4.jpg?v=1599840488",
+    image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBgf8UB3wSLBH0Hkk2Wdyow7wayGbO3UGBiQ&s",
     link:"https://www.agood.com/blogs/stories/how-to-reuse-plastic-at-home"
 }]
