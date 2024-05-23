@@ -7,13 +7,13 @@ const { notifyUserByEmail } = require("../nodemailer/notifyUser");
 
 module.exports.schedulePickup = async (req, res) => {
   try {
-      const { user, city, state, address, othernumber, items, recycler,weight } = req.body;
+      const { user, city, state, address, othernumber,recycler, items,weight } = req.body;
 
-      // Find an available recycler in the specified city
-      const recycle = await Recycler.findOne({ city: city, availability: true });
+      const recycle = await Recycler.findById(recycler);
       if (!recycle) {
-          return res.status(404).json({ message: "No recyclers available for this location" });
+        return res.status(404).json({ message: "Recycler not found" });
       }
+  
 
       
       const newpickup = new Pickup({
@@ -25,12 +25,12 @@ module.exports.schedulePickup = async (req, res) => {
           othernumber: othernumber,
           items: items,
           weight:weight,
-          recycler: recycle._id  
+          recycler: recycle._id,  
       });
 
       
       await newpickup.save();
-
+console.log(recycle.email);
     
       notifyRecyclerByEmail(newpickup, recycle.email);
 
