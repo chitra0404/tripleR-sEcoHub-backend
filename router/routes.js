@@ -44,7 +44,7 @@ router.post("/ad-login",admninLogin);
 
 //pickup routes
 router.post("/pickup",auth,schedulePickup);
-router.put("/pickuprequest/:id/confirm",rauth,pickupRequest);
+router.put("/pickuprequest/:id/confirm",pickupRequest);
 router.put('/pickuprequest/:pickupRequestId',rauth,updateRate)
 router.get("/pickuprequests",getResponse);
 router.get("/search",searchRecyclers);
